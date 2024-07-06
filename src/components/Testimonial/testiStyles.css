@@ -1,0 +1,22 @@
+.testimonialSwiper .swiper-button-next, 
+.testimonialSwiper .swiper-button-prev {
+  color: #3C4242;
+}
+
+.testimonialSwiper .swiper-button-next:after, 
+.testimonialSwiper .swiper-button-prev:after {
+  font-size: 30px;
+}
+
+.testimonialSwiper .swiper-button-next.swiper-button-disabled, 
+.testimonialSwiper .swiper-button-prev.swiper-button-disabled {
+  opacity: 0;
+}
+
+.testimonialSwiper .swiper-pagination-bullet-active {
+  background-color: #3C4242 !important;
+}
+
+.testimonialSwiper .swiper-pagination-bullet {
+  background-color: #3C4242;
+}
