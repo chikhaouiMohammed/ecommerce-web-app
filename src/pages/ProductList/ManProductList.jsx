@@ -101,29 +101,23 @@ const ManProductList = () => {
 
        
         {/* Left Sidebar */}
-        
-       
-          <aside className={`lg:flex-shrink-0 absolute lg:block lg:static left-0   ${ isFilter ? 'block ' : 'hidden' } md:w-[50%] w-full lg:w-[32%]  z-20 px-5 transition-all duration-200`}>
-            <div className="bg-white rounded-lg p-3 drop-shadow-xl ">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl text-darkGrey font-semibold">Filter</h2>
-                <img src={filterIcon} alt="Filter Icon" className="h-6" />
-              </div>
-              <div className="h-0.5 w-full bg-lightGrey" />
-              <div>
-                <According />
-              </div>
+        <aside className={`lg:flex-shrink-0 absolute lg:block lg:static left-0   ${ isFilter ? 'block ' : 'hidden' } md:w-[50%] w-full lg:w-[32%]  z-20 px-5 transition-all duration-200`}>
+          <div className="bg-white rounded-lg p-3 drop-shadow-xl ">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl text-darkGrey font-semibold">Filter</h2>
+              <img src={filterIcon} alt="Filter Icon" className="h-6" />
             </div>
-          </aside>
-        
-        
-        
-
+            <div className="h-0.5 w-full bg-lightGrey" />
+            <div>
+              <According />
+            </div>
+          </div>
+        </aside>
         {/* Product List */}
         <div className="w-full flex justify-center items-start flex-wrap gap-x-5 gap-y-10 px-1">
           {
             products.length ? (
-              products.map((product, index) => (
+              products.map((product) => (
                 <Link to={`/shop/women/${product.id}`} state={{type: 'men'}} key={product.id} className="cursor-pointer flex flex-col w-[270px] justify-center items-start gap-6 relative transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg rounded-xl pb-4">
                   <div className="w-full rounded-xl overflow-hidden">
                     <img className="w-[270px] h-[370px]" src={product.images[0]} alt={product.title} />
@@ -138,13 +132,7 @@ const ManProductList = () => {
                       ${product.price}
                     </div>
                   </div>
-                  {/* Add to cart */}
-                  {/* <Link to={`/shop/women/${product.id}`} className='flex justify-center items-center w-full'>
-                    <div className="cursor-pointer px-3 font-medium font-open text-lg flex justify-center gap-3 items-center rounded-[8px] text-white w-[156px] h-[54px] transition-all duration-300 bg-aztecPurple hover:bg-[#6620C1] hover:shadow-md">
-                      <div className='w-[20px] h-[20px]'><FiShoppingCart className="text-white font-bold text-lg" /></div>
-                      <span className='capitalize text-base font-semibold'>add to cart</span>
-                    </div>
-                  </Link> */}
+                  
                   {/* Favorite Button */}
                   <div
                     className={`z-30 bg-white w-8 h-8 rounded-full flex justify-center items-center absolute top-5 right-3 transition-all duration-200 hover:bg-aztecPurple cursor-pointer`}

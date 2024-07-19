@@ -108,20 +108,20 @@ const ProductDetails = () => {
                     <div className="w-full  flex flex-col justify-center items-start gap-14  rounded-xl">
                         <div className="rounded-xl overflow-hidden shadow-lg flex justify-center items-center w-full"><img className="w-full h-full" src={productData.images[0]} alt="" /></div>
                         <div className="bg-[#BEBCBD] h-[1px] w-full"></div>
-                        <div className="md:grid md:grid-cols-2 md:grid-rows-2 flex justify-center flex-wrap items-center gap-16">
-                            <div className="flex justify-center items-center py-[11px] pr-5 text-darkGrey gap-4">
+                        <div className="md:grid md:grid-cols-2 md:grid-rows-2 w-full flex justify-center flex-wrap items-start gap-16">
+                            <div className="flex justify-start items-center w-[250px] pr-5 text-darkGrey gap-4">
                                 <div className="w-11 h-11 flex justify-center items-center bg-[#F6F6F6] rounded-full text-xl"><IoCalendarOutline /></div>
                                 <div className="text-lg font-medium text-darkGrey">Secure payment</div>
                             </div>
-                            <div className="flex justify-start items-center py-[11px] pr-5 text-darkGrey gap-4">
+                            <div className="flex justify-start items-center w-[250px] pr-5 text-darkGrey gap-4">
                                 <div className="w-11 h-11 flex justify-center items-center bg-[#F6F6F6] rounded-full text-xl"><PiTShirt /></div>   
                                 <div className="text-lg font-medium text-darkGrey">Size & Fit</div>                             
                             </div>
-                            <div className="flex justify-center items-center py-[11px] pr-5 text-darkGrey gap-4">
+                            <div className="flex justify-start items-center w-[250px] pr-5 text-darkGrey gap-4">
                                 <div className="w-11 h-11 flex justify-center items-center bg-[#F6F6F6] rounded-full text-xl"><LiaShippingFastSolid /></div>   
                                 <div className="text-lg font-medium text-darkGrey">Free Shipping</div>                             
                             </div>
-                            <div className="flex justify-center items-center py-[11px] pr-5 text-darkGrey gap-4">
+                            <div className="flex justify-start items-center w-[250px] pr-5 text-darkGrey gap-4">
                                 <div className="w-11 h-11 flex justify-center items-center bg-[#F6F6F6] rounded-full text-xl"><PiArrowsCounterClockwiseFill /></div>   
                                 <div className="text-lg font-medium text-darkGrey">Free Shipping & Returns</div>                             
                             </div>
@@ -130,7 +130,7 @@ const ProductDetails = () => {
                     {/* Product Details */}
                     <div className=" lg:py-[30px] lg:px-[74px] w-full flex flex-col justify-center gap-16 items-start ">
                         {/* Path div */}
-                        <div className="text-mediumGrey text-lg font-medium capitalize">shop > {type} </div>
+                        <div className="text-mediumGrey mt-5 text-lg font-medium capitalize">shop > {type} </div>
                         <h2 className="font-bold text-xl md:text-3xl text-darkGrey">{productData.name}</h2>
                         {/* Reviews stuff */}
                         <div className="flex justify-center md:flex-nowrap flex-wrap items-start gap-6">

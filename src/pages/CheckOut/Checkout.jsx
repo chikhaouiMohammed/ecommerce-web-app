@@ -87,7 +87,7 @@ const Checkout = () => {
         {/* NavBar */}
         <Header/>
         {/* CheckoutContent */}
-        <div className='container mx-auto mt-32'>
+        <div className='container mx-auto  mt-32'>
         {/* Heading */}
         <div className='flex flex-col justify-center gap-[52px] items-start w-full'>
             <div className="font-semibold text-mediumGrey text-base md:text-lg flex justify-center flex-wrap md:flex-nowrap items-center gap-5"><span>Home</span>  <span>></span>  <span>My Account</span><span>></span><span className="text-darkGrey font-medium">Checkout</span></div>
@@ -97,7 +97,7 @@ const Checkout = () => {
         <div className='font-bold text- mb-5'>Billing Details</div>
         <div className='w-full flex lg:flex-nowrap flex-wrap gap-5 justify-center items-start'>
                 {/* Checkout Form  + payment */}
-                <div className='lg:order-1 flex-shrink-0 order-2'>
+                <div className='lg:order-1 flex-shrink-0 order-2 w-[300px] mx-auto md:w-fit'>
                     <form className='flex flex-col w-full flex-shrink-0 justify-center gap-10 lg:gap-2 items-start px-2'>
                             <div className='w-full flex-wrap md:flex-nowrap flex justify-between items-center gap-10 md:gap-8'>
                                 <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
@@ -155,7 +155,7 @@ const Checkout = () => {
                             <div className="w-full h-[0.09px] bg-[#EDEEF2]"></div>
                     </form>
                     {/* Payment */}
-                    <div className='px-2 w-full'>
+                    <div className='px-2 w-[300px] mx-auto md:w-full'>
                         {/*Address Heading */}
                         <div className='my-8 text-darkGrey font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
                             <h3 className='font-bold text-lg md:text-[22px]'>Shipping Address</h3>
@@ -175,11 +175,11 @@ const Checkout = () => {
                         </div>
                         <div className="w-full my-8 h-[0.09px] bg-[#EDEEF2]"></div>
                         {/* Shipping Heading */}
-                        <div className=' text-darkGrey font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
+                        <div className=' text-darkGrey  font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
                             <h3 className='font-bold text-lg md:text-[22px]'>Shipping Method</h3>
                         </div>
                         {/* Shipping Method */}
-                        <div className='bg-[#F6F6F6] mt-8 rounded-xl text-darkGrey text-xl font-bold flex flex-col justify-center items-start gap-6 px-7 py-9'>
+                        <div className='bg-[#F6F6F6]  mt-8 rounded-xl text-darkGrey text-xl font-bold flex flex-col justify-center items-start gap-6 px-7 py-9'>
                         <div >
                                 Arrives by Monday, June 7
                             </div>
@@ -194,14 +194,14 @@ const Checkout = () => {
                             </div>
                         </div>
                         {/*Payment Method Heading */}
-                        <div className='my-8 text-darkGrey font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
+                        <div className='my-8 text-darkGrey  font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
                             <h3 className='font-bold text-lg md:text-[22px]'>Payment Method</h3>
                             <span className='font-normal text-base'>All transaction are secure and encrypted</span>
                         </div>
                         {/* Payment  Choices */}
-                        <div className='bg-[#F6F6F6] rounded-xl mt-8 text-darkGrey text-xl font-bold flex flex-col justify-center items-start gap-6 px-2 lg:px-7 py-9'>
+                        <div className='bg-[#F6F6F6] rounded-xl mt-8  text-darkGrey text-xl font-bold flex flex-col justify-center items-start gap-6 px-2 lg:px-7 py-9'>
                             {/* Credit Card Method */} 
-                            <div className='flex flex-col justify-center items-start gap-5'>
+                            <div className='flex flex-col justify-center items-start gap-5 w-full'>
                                 <div className='cursor-pointer flex justify-center items-center gap-5'>
                                     <input defaultChecked className='radio-primary' type="radio" name="payment" id="credit-radio" />
                                     <label className='custom-radio-label' htmlFor="credit-radio">Credit Card 
@@ -210,7 +210,7 @@ const Checkout = () => {
                                     </label>
                                 </div>
                                 {/* card credits methods */}
-                                <div className='w-full'>
+                                <div className='w-full '>
                                     {/* Payment methods images */}
                                     <div className='mb-[30px] flex justify-center flex-wrap md:flex-nowrap items-center gap-5'>
                                         <div className='w-20 flex justify-center items-center py-4 rounded-lg bg-white'><img className='w-fit h-fit' src={gPayImg} alt="" /></div>
