@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithPopup } from 'firebase/auth';
 import googleImg from '../images/Login/icons8-google-48.png';
 import { auth, db } from '../firebase';
 import toast from 'react-hot-toast';
@@ -9,18 +9,24 @@ import React from 'react';
 const GoogleSignIn = () => {
   const navigate = useNavigate();
 
-  const handleGoogleSigning = async () => {
+  const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-
+  
     try {
-      // Set persistence to local to keep users signed in
-      await setPersistence(auth, browserSessionPersistence);
-
-
-      // Sign in with redirect
-      await signInWithRedirect(auth, provider);
+      // Set persistence to local
+      await setPersistence(auth, browserLocalPersistence);
+      // Sign in with Google popup
+      const result = await signInWithPopup(auth, provider);
+  
+      // The signed-in user info
+      const user = result.user;
+      console.log('User signed in:', user);
+      
+      // Handle successful sign-in, navigate to profile or store user info
+      // Example: navigate("/user-profile");
+  
     } catch (error) {
-      toast.error("Error initiating sign-in: " + error.message);
+      console.error("Error during sign-in:", error);
     }
   };
 
@@ -59,7 +65,7 @@ const GoogleSignIn = () => {
 
   return (
     <div
-      onClick={handleGoogleSigning}
+      onClick={handleGoogleSignIn}
       className='transition-all duration-300 hover:bg-aztecPurple hover:text-white text-aztecPurple mb-20 flex justify-center items-center gap-3 w-full border-darkGrey border-solid border-[1px] py-4 rounded-lg cursor-pointer'
     >
       <div className='w-[30px] h-[30px]'>
