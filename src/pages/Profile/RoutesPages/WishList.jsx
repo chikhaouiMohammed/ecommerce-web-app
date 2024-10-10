@@ -97,7 +97,7 @@ const WishList = () => {
             <div className="text-center">
               <h3 className="text-darkGrey text-[34px] font-bold">Your wishlist is empty</h3>
               <p className="text-center text-mediumGrey font-medium text-base">
-                You don't have any products in the wishlist yet. You will find a lot
+                You dont have any products in the wishlist yet. You will find a lot
                 of interesting products on our shop page.
               </p>
             </div>

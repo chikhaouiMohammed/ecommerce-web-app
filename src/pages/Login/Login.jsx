@@ -7,9 +7,9 @@ import { Link } from 'react-router-dom'
 import GoogleSignIn from '../GoogleSignIn'
 import { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../../firebase'
 import toast from 'react-hot-toast'
 import Header from '../../components/Header/Header'
+import { auth } from '../../firebase'
 
 const Login = () => {
 

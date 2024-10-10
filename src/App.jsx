@@ -28,11 +28,20 @@ function App() {
  
 
   useEffect(() => {
-    auth.onAuthStateChanged((user)=>{
-      setuser(user)
-    })
-    
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        console.log("User is authenticated:", user);
+        setuser(user);
+      } else {
+        console.log("No user is authenticated.");
+        setuser(null);
+      }
+    });
+  
+    return () => unsubscribe();
   }, []);
+  
+  
 
   return (
     <>

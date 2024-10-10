@@ -1,5 +1,4 @@
 // import images
-import logo from '../../images/Logo.png'
 import loginImg from '../../images/Login/Image.png'
 import { Link } from 'react-router-dom'
 import { Checkbox, FormControlLabel } from '@mui/material'

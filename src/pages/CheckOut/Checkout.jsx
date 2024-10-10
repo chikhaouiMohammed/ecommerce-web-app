@@ -1,12 +1,7 @@
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import SectionHeading from '../../components/ui/SectionHeading';
-import img from '../../images/Categories/For Women/Rectangle 1.png';
-import gPayImg from '../../images/Checkout/googlePay.png';
-import visaImg from '../../images/Checkout/visa.png';
-import payPalImg from '../../images/Checkout/paypal.png';
-import payPassImg from '../../images/Checkout/paypass.png';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';

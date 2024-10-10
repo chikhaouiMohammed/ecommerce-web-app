@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import googleImg from '../images/Login/icons8-google-48.png';
 import { auth, db } from '../firebase';
 import toast from 'react-hot-toast';
@@ -14,7 +14,8 @@ const GoogleSignIn = () => {
 
     try {
       // Set persistence to local to keep users signed in
-      await setPersistence(auth, browserLocalPersistence);
+      await setPersistence(auth, browserSessionPersistence);
+
 
       // Sign in with redirect
       await signInWithRedirect(auth, provider);
@@ -28,9 +29,11 @@ const GoogleSignIn = () => {
     const checkRedirectResult = async () => {
       try {
         const result = await getRedirectResult(auth);
+        console.log("Google Sign-In Redirect Result:", result);
+  
         if (result?.user) {
           const user = result.user;
-
+  
           // Store user data in Firestore
           await setDoc(doc(db, "users", user.uid), {
             email: user.email,
@@ -38,17 +41,21 @@ const GoogleSignIn = () => {
             photo: user.photoURL,
             signInMethod: 'Google',
           });
-
+  
           toast.success('Registration successful!');
           navigate('/user-profile');
+        } else {
+          console.log("No user returned from Google Sign-In.");
         }
       } catch (error) {
         toast.error("Error during sign-in: " + error.message);
+        console.log("Error during sign-in:", error);
       }
     };
-
+  
     checkRedirectResult();
   }, [navigate]);
+  
 
   return (
     <div
