@@ -1,48 +1,54 @@
-import { GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import googleImg from '../images/Login/icons8-google-48.png';
 import { auth, db } from '../firebase';
 import toast from 'react-hot-toast';
 import { doc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 const GoogleSignIn = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleGoogleSigning = async () => {
     const provider = new GoogleAuthProvider();
 
     try {
-      // Use redirect for all devices
-      await signInWithRedirect(auth, provider);
+      // Set persistence to local to keep users signed in
+      await setPersistence(auth, browserLocalPersistence);
 
-      // Listen for the redirect result
-      auth.getRedirectResult().then((result) => {
-        if (result.user) {
+      // Sign in with redirect
+      await signInWithRedirect(auth, provider);
+    } catch (error) {
+      toast.error("Error initiating sign-in: " + error.message);
+    }
+  };
+
+  // Handle redirect result when the component mounts
+  React.useEffect(() => {
+    const checkRedirectResult = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result?.user) {
           const user = result.user;
-          
+
           // Store user data in Firestore
-          setDoc(doc(db, "users", user.uid), {
+          await setDoc(doc(db, "users", user.uid), {
             email: user.email,
             fullName: user.displayName,
             photo: user.photoURL,
             signInMethod: 'Google',
-          })
-          .then(() => {
-            toast.success('Registration successful!');
-            navigate('/user-profile');
-          })
-          .catch((error) => {
-            toast.error(error.message);
           });
+
+          toast.success('Registration successful!');
+          navigate('/user-profile');
         }
-      }).catch((error) => {
-        toast.error(error.message);
-      });
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+      } catch (error) {
+        toast.error("Error during sign-in: " + error.message);
+      }
+    };
+
+    checkRedirectResult();
+  }, [navigate]);
 
   return (
     <div
