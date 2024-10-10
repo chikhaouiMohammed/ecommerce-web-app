@@ -13,11 +13,11 @@ const ProductTable = () => {
                 setUser(currentUser); // Set the user if authenticated
                 const docRef = doc(db, "cart", `${currentUser.uid}`);
                 const docSnap = await getDoc(docRef);
-
+    
                 if (docSnap.exists()) {
                     const productsWithQuantity = docSnap.data().products.map((product) => ({
                         ...product,
-                        quantity: 1 // Default quantity, adjust as needed
+                        quantity: product.quantity || 1 // Use the stored quantity or default to 1 if it doesn't exist
                     }));
                     setProductsList(productsWithQuantity);
                 } else {
@@ -31,9 +31,10 @@ const ProductTable = () => {
             }
         } catch (error) {
             console.error("Error fetching data:", error);
-            window.location.href = '/shop/cart/empty'
+            window.location.href = '/shop/cart/empty';
         }
     };
+    
 
     useEffect(() => {
         const currentUser = auth.currentUser;

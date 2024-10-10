@@ -9,7 +9,6 @@ import LightSection from "../components/InTheLimeLight/LightSection"
 import NewArrivals from "../components/NewArrivals/NewArrivals"
 import Testimonial from "../components/Testimonial/Testimonial"
 import TopBrandsDeal from "../components/TopBrands/TopBrandsDeal"
-import { auth } from "../firebase"
 
 
 const Home = () => {

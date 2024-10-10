@@ -49,6 +49,7 @@ const dressStyles = ['Tops', 'Printed T-shirts', 'Plain T-shirts', 'Kurti', 'Box
 const According = () => {
     const [value, setValue] = useState([0, 100]);
     const { priceRange , setPriceRange } = useContext(FilterContext)
+    const [isLoading, setIsLoading] = useState(false)
     
 
     const valuetext = (value) => `${value}$`;
@@ -57,17 +58,36 @@ const According = () => {
         setPriceRange(newValue)
         setValue(newValue);
     };
+    useEffect(() => {
+      handleChangedColor()
+    }, [isLoading])
+    
+    const handleChangedColor = () => {
+        setIsLoading(true); // Start loading
+        setTimeout(() => {
+            console.log('color changed');
+            setIsLoading(false); // Stop loading after async operation
+        }, 1000); // Simulating a 1-second delay
+    };
+    
+    const handleChangedSize = () => {
+        setIsLoading(true)
+       setTimeout(() => {
+         console.log('color changed')
+       }, 1000);
+        setIsLoading(false)
+    }
     
 
     const renderColorOptions = () => colorOptions.map(({ color, label }, index) => (
         <Box key={index} className=' flex flex-col cursor-pointer justify-center items-center gap-[18px]'>
-            <Box className='w-10 h-10 rounded-xl' sx={{ backgroundColor: color }}></Box>
+            <Box  className='w-10 h-10 rounded-xl' sx={{ backgroundColor: color }}></Box>
             <Box>{label}</Box>
         </Box>
     ));
 
     const renderSizeOptions = () => sizeOptions.map((size, index) => (
-        <Box key={index} className='w-[60px] text-center text-darkGrey font-semibold text-base py-2 px-5 rounded-lg transition-all duration-200 hover:bg-darkGrey cursor-pointer hover:text-white uppercase border-solid border-[#BEBCBD] border-[1px]'>
+        <Box onClick={handleChangedSize} key={index} className='w-[60px] text-center text-darkGrey font-semibold text-base py-2 px-5 rounded-lg transition-all duration-200 hover:bg-darkGrey cursor-pointer hover:text-white uppercase border-solid border-[#BEBCBD] border-[1px]'>
             {size}
         </Box>
     ));
@@ -83,69 +103,76 @@ const According = () => {
 
     return (
         <Box className='px-3 w-full font-open'>
-            <Accordion defaultExpanded style={{ boxShadow: 'none' }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1-content"
-                    id="panel1-header"
-                >
-                    <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Price</Typography>
-                </AccordionSummary>
-                <AccordionDetails className='text-darkGrey'>
-                    {priceSection(value, handleChange, valuetext)}
-                </AccordionDetails>
-            </Accordion>
-
-            <Accordion defaultExpanded style={{ boxShadow: 'none' }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2-content"
-                    id="panel2-header"
-                >
-                    <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Colors</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Box className='py-10 text-mediumGrey text-sm font-semibold flex flex-col justify-center items-center gap-5'>
-                        <Box className='w-full flex justify-between items-center'>{renderColorOptions().slice(0, 4)}</Box>
-                        <Box className='w-full flex justify-between items-center'>{renderColorOptions().slice(4, 8)}</Box>
-                        <Box className='w-full flex justify-between items-center'>{renderColorOptions().slice(8, 12)}</Box>
-                    </Box>
-                </AccordionDetails>
-            </Accordion>
-
-            <Accordion defaultExpanded style={{ boxShadow: 'none' }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel3-content"
-                    id="panel3-header"
-                >
-                    <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Size</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Box className='py-10 text-mediumGrey text-sm font-semibold flex flex-col justify-center items-center gap-5'>
-                        <Box className='w-full flex justify-between items-center'>{renderSizeOptions().slice(0, 3)}</Box>
-                        <Box className='w-full flex justify-between items-center'>{renderSizeOptions().slice(3, 6)}</Box>
-                        <Box className='w-full flex justify-between items-center'>{renderSizeOptions().slice(6, 9)}</Box>
-                    </Box>
-                </AccordionDetails>
-            </Accordion>
-
-            <Accordion defaultExpanded style={{ boxShadow: 'none', width: '100%' }}>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel4-content"
-                    id="panel4-header"
-                >
-                    <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Dress Style</Typography>
-                </AccordionSummary>
-                <AccordionDetails style={{ width: '100%' }}>
-                    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '20px', color: '#807d7e', fontSize: '16px', fontWeight: 600, py: 5 }}>
-                        {renderDressStyles()}
-                    </Box>
-                </AccordionDetails>
-            </Accordion>
+            {isLoading ? (
+                <div className=' w-full h-full flex justify-center items-center'><span className="loading loading-infinity loading-lg "></span></div>
+            ) : (
+                <>
+                    <Accordion defaultExpanded style={{ boxShadow: 'none' }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1-content"
+                            id="panel1-header"
+                        >
+                            <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Price</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails className='text-darkGrey'>
+                            {priceSection(value, handleChange, valuetext)}
+                        </AccordionDetails>
+                    </Accordion>
+    
+                    <Accordion defaultExpanded style={{ boxShadow: 'none' }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel2-content"
+                            id="panel2-header"
+                        >
+                            <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Colors</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Box className='py-10 text-mediumGrey text-sm font-semibold flex flex-col justify-center items-center gap-5'>
+                                <Box onClick={handleChangedColor} className='w-full flex justify-between items-center'>{renderColorOptions().slice(0, 4)}</Box>
+                                <Box onClick={handleChangedColor} className='w-full flex justify-between items-center'>{renderColorOptions().slice(4, 8)}</Box>
+                                <Box onClick={handleChangedColor} className='w-full flex justify-between items-center'>{renderColorOptions().slice(8, 12)}</Box>
+                            </Box>
+                        </AccordionDetails>
+                    </Accordion>
+    
+                    <Accordion defaultExpanded style={{ boxShadow: 'none' }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel3-content"
+                            id="panel3-header"
+                        >
+                            <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Size</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Box className='py-10 text-mediumGrey text-sm font-semibold flex flex-col justify-center items-center gap-5'>
+                                <Box className='w-full flex justify-between items-center'>{renderSizeOptions().slice(0, 3)}</Box>
+                                <Box className='w-full flex justify-between items-center'>{renderSizeOptions().slice(3, 6)}</Box>
+                                <Box className='w-full flex justify-between items-center'>{renderSizeOptions().slice(6, 9)}</Box>
+                            </Box>
+                        </AccordionDetails>
+                    </Accordion>
+    
+                    <Accordion defaultExpanded style={{ boxShadow: 'none', width: '100%' }}>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel4-content"
+                            id="panel4-header"
+                        >
+                            <Typography className='font-open' style={{ fontWeight: 600, fontSize: '22px', color: '#807D7E' }}>Dress Style</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails style={{ width: '100%' }}>
+                            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: '20px', color: '#807d7e', fontSize: '16px', fontWeight: 600, py: 5 }}>
+                                {renderDressStyles()}
+                            </Box>
+                        </AccordionDetails>
+                    </Accordion>
+                </>
+            )}
         </Box>
     );
+    
 };
 
 export default According;

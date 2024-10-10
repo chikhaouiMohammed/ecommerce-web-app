@@ -24,6 +24,23 @@ const ProductDetails = () => {
     let { id } = useParams();
     const [productData, setproductData] = useState();
     const [similarProducts, setSimilarProducts] = useState();
+    const [selectedSize, setSelectedSize] = useState(null);
+    const [selectedColor, setSelectedColor] = useState(null);
+
+    const sizes = ['XSS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL'];
+    const colors = [
+        { color: 'darkGrey', hex: '#333' },
+        { color: 'yellow', hex: '#EDD146' },
+        { color: 'pink', hex: '#EB84B0' },
+        { color: 'darkRed', hex: '#9C1F35' },
+    ];
+    const handleSizeClick = (size) => {
+        setSelectedSize(size);
+    };
+
+    const handleColorClick = (color) => {
+        setSelectedColor(color);
+    };
     
     let { state } = useLocation()
     const type = state.type
@@ -76,7 +93,10 @@ const ProductDetails = () => {
                 id: id,
                 name: productData.name,
                 price: productData.price,
-                image: productData.images[0]
+                image: productData.images[0],
+                size: selectedSize,
+                color: selectedColor,
+                quantity: 1
             };
     
             await setDoc(doc(db, `cart/${user.uid}`), {
@@ -151,25 +171,56 @@ const ProductDetails = () => {
                             </div>
 
                         </div>
-                        {/* Size */}
-                        <div className="flex flex-col gap-6 justify-center items-start">
-                            <div className="font-semibold text-darkGrey text-base md:text-lg flex justify-center items-center gap-5">Select Size  <span className="text-mediumGrey font-medium">Size Guide</span><span className="text-mediumGrey text-3xl"><IoIosArrowRoundForward /></span></div>
-                            <div className="flex justify-center md:flex-nowrap flex-wrap gap-6 items-center">
-                                <div className="w-[38px] h-[38px] rounded-xl border-solid border-[#BEBCBD] border-[1px] flex justify-center items-center font-medium cursor-pointer duration-200 transition-all hover:bg-darkGrey hover:text-white">XS</div>
-                                <div className="w-[38px] h-[38px] rounded-xl border-solid border-[#BEBCBD] border-[1px] flex justify-center items-center font-medium cursor-pointer duration-200 transition-all hover:bg-darkGrey hover:text-white">S</div>
-                                <div className="w-[38px] h-[38px] rounded-xl border-solid border-[#BEBCBD] border-[1px] flex justify-center items-center font-medium cursor-pointer duration-200 transition-all hover:bg-darkGrey hover:text-white">M</div>
-                                <div className="w-[38px] h-[38px] rounded-xl border-solid border-[#BEBCBD] border-[1px] flex justify-center items-center font-medium cursor-pointer duration-200 transition-all hover:bg-darkGrey hover:text-white">L</div>
-                                <div className="w-[38px] h-[38px] rounded-xl border-solid border-[#BEBCBD] border-[1px] flex justify-center items-center font-medium cursor-pointer duration-200 transition-all hover:bg-darkGrey hover:text-white">XL</div>
+                        <div>
+                            {/* Size */}
+                            <div className="flex flex-col gap-6 justify-center items-start">
+                                <div className="font-semibold text-darkGrey text-base md:text-lg flex justify-center items-center gap-5">
+                                    Select Size
+                                    <span className="text-mediumGrey font-medium">Size Guide</span>
+                                    <span className="text-mediumGrey text-3xl">
+                                        <IoIosArrowRoundForward />
+                                    </span>
+                                </div>
+                                <div className="flex justify-center md:flex-nowrap flex-wrap gap-6 items-center">
+                                    {sizes.map((size) => (
+                                        <div
+                                            key={size}
+                                            onClick={() => handleSizeClick(size)}
+                                            className={`w-[38px] h-[38px] rounded-xl border-solid border-[#BEBCBD] border-[1px] flex justify-center items-center font-medium cursor-pointer duration-200 transition-all ${
+                                                selectedSize === size ? 'bg-darkGrey text-white' : 'hover:bg-darkGrey hover:text-white'
+                                            }`}
+                                        >
+                                            {size}
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                        {/* Colors Available */}
-                        <div className="flex flex-col justify-center items-start gap-[25px]">
-                            <h3 className="font-semibold text-lg">Colors Available</h3>
-                            <div className="flex justify-center items-center gap-5">
-                                <div className="w-[35px] h-[35px] flex justify-center items-center rounded-full cursor-pointer color-active"><div className="w-[25px] h-[25px] rounded-full bg-darkGrey"></div></div>
-                                <div className="w-[35px] h-[35px] flex justify-center items-center rounded-full cursor-pointer"><div className="bg-[#EDD146] w-[25px] h-[25px] rounded-full"></div></div>
-                                <div className="w-[35px] h-[35px] flex justify-center items-center rounded-full cursor-pointer"><div className="bg-[#EB84B0] w-[25px] h-[25px] rounded-full"></div></div>
-                                <div className="w-[35px] h-[35px] flex justify-center items-center rounded-full cursor-pointer"><div className="bg-[#9C1F35] w-[25px] h-[25px] rounded-full"></div></div>
+
+                            {/* Colors Available */}
+                            <div className="flex flex-col justify-center items-start gap-[25px]">
+                                <h3 className="font-semibold text-lg">Colors Available</h3>
+                                <div className="flex justify-center items-center gap-5">
+                                    {colors.map((color) => (
+                                        <div
+                                            key={color.color}
+                                            onClick={() => handleColorClick(color)}
+                                            className={`w-[35px] h-[35px] flex justify-center items-center rounded-full cursor-pointer ${
+                                                selectedColor?.color === color.color ? 'border-2 border-black' : ''
+                                            }`}
+                                        >
+                                            <div
+                                                className="w-[25px] h-[25px] rounded-full"
+                                                style={{ backgroundColor: color.hex }}
+                                            ></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Show Selected */}
+                            <div className="mt-5">
+                                <p>Selected Size: {selectedSize ? selectedSize : 'None'}</p>
+                                <p>Selected Color: {selectedColor ? selectedColor.color : 'None'}</p>
                             </div>
                         </div>
                         {/* Add to cart + Price */}

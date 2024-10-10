@@ -1,8 +1,6 @@
 //import images
-import logo from '../../images/Logo.png'
 import loginImg from '../../images/Login/Image.png'
-import googleImg from '../../images/Login/icons8-google-48.png'
-import xImg from '../../images/Login/icons8-twitterx-50.png'
+
 
 import './style.css'
 import { Link } from 'react-router-dom'

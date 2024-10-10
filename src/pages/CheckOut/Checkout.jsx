@@ -6,7 +6,7 @@ import gPayImg from '../../images/Checkout/googlePay.png';
 import visaImg from '../../images/Checkout/visa.png';
 import payPalImg from '../../images/Checkout/paypal.png';
 import payPassImg from '../../images/Checkout/paypass.png';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ import { auth, db } from '../../firebase';
 const Checkout = () => {
     const [productsList, setProductsList] = useState([]);
     const [user, setUser] = useState(null);
+    const navigate = useNavigate()
 
     const fetchData = async (currentUser) => {
         try {
@@ -47,6 +48,16 @@ const Checkout = () => {
         return randomNum;
     };
 
+    const clearCardItems = async () => {
+        try {
+            const docRef = doc(db, "cart", `${user.uid}`);
+            await setDoc(docRef, { products: [] });
+        } catch (error) {
+            console.error("Error clearing cart items:", error);
+            toast.error("Failed to clear cart items. Please try again later.");
+        }
+    }
+
     const handlePayNow = async () => {
         try {
             if (!user) {
@@ -64,12 +75,12 @@ const Checkout = () => {
             const ordersCollectionRef = collection(db, `myOrder/${user.uid}/orders`); // Adjusted collection reference
             await setDoc(doc(ordersCollectionRef), order);
     
-            // Clear the cart after placing the order (assuming you have a function for this)
+            await clearCardItems()
             // await clearCart(user.uid);
     
             // Redirect to order confirmation page
-            toast.success("Order placed successfully!");
-            history.push('/shop/cart/checkout/order-confirmed');
+            toast.success("Ordr eplaced successfully!");
+            navigate('/shop/cart/checkout/order-confirmed');
         } catch (error) {
             console.error("Error placing order:", error);
             toast.error("Failed to place order. Please try again later.");
@@ -82,203 +93,166 @@ const Checkout = () => {
         fetchData(currentUser);
     }, []);
 
-  return (
-    <div className='font-open'>
-        {/* NavBar */}
-        <Header/>
-        {/* CheckoutContent */}
-        <div className='container mx-auto  mt-32'>
-        {/* Heading */}
-        <div className='flex flex-col justify-center gap-[52px] items-start w-full'>
-            <div className="font-semibold text-mediumGrey text-base md:text-lg flex justify-center flex-wrap md:flex-nowrap items-center gap-5"><span>Home</span>  <span>></span>  <span>My Account</span><span>></span><span className="text-darkGrey font-medium">Checkout</span></div>
-            <SectionHeading title='Check Out' />
-        </div>
-        {/* Checkout Body */}
-        <div className='font-bold text- mb-5'>Billing Details</div>
-        <div className='w-full flex lg:flex-nowrap flex-wrap gap-5 justify-center items-start'>
-                {/* Checkout Form  + payment */}
-                <div className='lg:order-1 flex-shrink-0 order-2 w-[300px] mx-auto md:w-fit'>
-                    <form className='flex flex-col w-full flex-shrink-0 justify-center gap-10 lg:gap-2 items-start px-2'>
-                            <div className='w-full flex-wrap md:flex-nowrap flex justify-between items-center gap-10 md:gap-8'>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='w-full text-base font-semibold ml-1 mb-2'>First Name*</div>
-                                    <input type="text" required placeholder="First Name" className=" input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>Last Name*</div>
-                                    <input type="text" required placeholder="Last Name" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                            </div>
-                            <div className='w-full flex-wrap md:flex-nowrap flex justify-center items-center gap-10 md:gap-8'>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>Country / Region*</div>
-                                    <input type="text" required placeholder="Country/Region" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>Company Name</div>
-                                    <input type="text" placeholder="Company (optional)" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                            </div>
-                            <div className='w-full flex-wrap md:flex-nowrap flex justify-center items-center gap-10 md:gap-8'>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>Street Address*</div>
-                                    <input type="text" required placeholder="House numbers and streets" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>Apt, suite, unit</div>
-                                    <input type="text" required placeholder="apartment , suite, unit, ect (optional)" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                            </div>
-                            <div className='w-full flex-wrap md:flex-nowrap flex justify-center gap-10 md:gap-8 items-center'>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>City*</div>
-                                    <input type="text" required placeholder="Town / City" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>State*</div>
-                                    <input type="text" required placeholder="State" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                                <label className='w-full flex flex-col justify-center items-start gap-8' htmlFor="">
-                                    <div className='text-base font-semibold ml-1 mb-2'>Postal Code*</div>
-                                    <input type="text" required placeholder="Postal Code" className="input w-full py-6  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                                </label>
-                            </div>
-                            <label className='w-full' htmlFor="">
-                                <div className='text-base font-semibold ml-1 mb-2'>Phone*</div>
-                                <input type="text" required placeholder="Phone" className="input w-full py-6 max-w-xs  bg-[#F6F6F6] placeholder:text-mediumGrey" />
-                            </label>
-                            <button type='submit' className="py-3 px-8 text-center cursor-pointer bg-aztecPurple transition-all duration-200 mx-auto mt-[50px] hover:bg-purple-800 text-white rounded-lg w-[230px] ms-0 ">Continue to delivery</button>
-                            <div  className='mt-4 cursor-pointer flex justify-center items-center gap-3' htmlFor="">
-                                <input type="checkbox" required placeholder='Save my ' required className='checkbox-primary cursor-pointer' name="save-info" id="save-info" />
-                                <label className='cursor-pointer text-lg font-normal text-darkGrey' for="save-info">Save my information as faster checkout</label>
-                            </div>
-                            <div className="w-full h-[0.09px] bg-[#EDEEF2]"></div>
-                    </form>
-                    {/* Payment */}
-                    <div className='px-2 w-[300px] mx-auto md:w-full'>
-                        {/*Address Heading */}
-                        <div className='my-8 text-darkGrey font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
-                            <h3 className='font-bold text-lg md:text-[22px]'>Shipping Address</h3>
-                            <span className='font-normal text-base'>Select the address that matches your or payment method</span>
-                        </div>
-                        {/* Address Choices */}
-                        <div className='bg-[#F6F6F6] rounded-xl mt-8 text-darkGrey text-lg md:text-[22px] font-bold flex flex-col justify-center items-start gap-6 px-7 py-9'>
-                            <div className='flex justify-center items-center gap-5'>
-                                <input  type="radio" className='radio-primary' name="address" id="radio-one" />
-                                <label className='custom-radio-label' htmlFor="radio-one">Same as Billing address</label>
-                            </div>
-                            <div className="w-full h-[0.09px] bg-[#BEBCBD]"></div>
-                            <div className='flex justify-center items-center gap-5'>
-                                <input className='radio-primary' type="radio" name="address" id="radio-two" />
-                                <label className='custom-radio-label' htmlFor="radio-two">Use a different shipping address</label>
-                            </div>
-                        </div>
-                        <div className="w-full my-8 h-[0.09px] bg-[#EDEEF2]"></div>
-                        {/* Shipping Heading */}
-                        <div className=' text-darkGrey  font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
-                            <h3 className='font-bold text-lg md:text-[22px]'>Shipping Method</h3>
-                        </div>
-                        {/* Shipping Method */}
-                        <div className='bg-[#F6F6F6]  mt-8 rounded-xl text-darkGrey text-xl font-bold flex flex-col justify-center items-start gap-6 px-7 py-9'>
-                        <div >
-                                Arrives by Monday, June 7
-                            </div>
-                            <div className="w-full h-[0.09px] bg-[#BEBCBD]"></div>
-                            <div className='w-full'>
-                                <div className='w-full flex justify-between items-center'>
-                                    <h3>Delivery Charges</h3>
-                                    <span>$5.00</span>
+    return (
+        <div className="font-open">
+            {/* Header */}
+            <Header />
+    
+            {/* Main Content */}
+            <div className="container mx-auto mt-32 px-4 lg:px-0">
+                {/* Breadcrumb and Heading */}
+                <div className="mb-12 text-center lg:text-left">
+                    <nav className="text-mediumGrey font-semibold space-x-2">
+                        <Link to="/" className="hover:underline">Home</Link> 
+                        <span>&gt;</span> 
+                        <Link to="/account" className="hover:underline">My Account</Link> 
+                        <span>&gt;</span> 
+                        <span className="text-darkGrey font-medium">Checkout</span>
+                    </nav>
+                    <SectionHeading title="Check Out" />
+                </div>
+    
+                {/* Checkout Content */}
+                <div className="flex flex-col lg:flex-row px-5 py-4 justify-between gap-12">
+                    
+                    {/* Left: Billing & Payment Form */}
+                    <div className="flex-grow lg:max-w-[60%]">
+                        {/* Billing Details */}
+                        <div className="mb-8">
+                            <h2 className="font-bold text-lg mb-4">Billing Details</h2>
+                            <form onSubmit={(event) => {
+                                        event.preventDefault();  
+                                        handlePayNow();         
+                                    }}  className="space-y-6">
+                                {/* Name Fields */}
+                                <div className="flex flex-wrap gap-6">
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="firstName">First Name*</label>
+                                        <input type="text" id="firstName" required placeholder="First Name" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="lastName">Last Name*</label>
+                                        <input type="text" id="lastName" required placeholder="Last Name" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
                                 </div>
-                                <br /> 
-                                <span className='text-base text-mediumGrey font-medium'>Additional fess may apply</span>
-                            </div>
-                        </div>
-                        {/*Payment Method Heading */}
-                        <div className='my-8 text-darkGrey  font-bold text-lg md:text-[22px] flex flex-col justify-center items-start gap-2'>
-                            <h3 className='font-bold text-lg md:text-[22px]'>Payment Method</h3>
-                            <span className='font-normal text-base'>All transaction are secure and encrypted</span>
-                        </div>
-                        {/* Payment  Choices */}
-                        <div className='bg-[#F6F6F6] rounded-xl mt-8  text-darkGrey text-xl font-bold flex flex-col justify-center items-start gap-6 px-2 lg:px-7 py-9'>
-                            {/* Credit Card Method */} 
-                            <div className='flex flex-col justify-center items-start gap-5 w-full'>
-                                <div className='cursor-pointer flex justify-center items-center gap-5'>
-                                    <input defaultChecked className='radio-primary' type="radio" name="payment" id="credit-radio" />
-                                    <label className='custom-radio-label' htmlFor="credit-radio">Credit Card 
-                                        <br />
-                                        <span className='font-normal text-base'>We accept all major credit card</span>
+    
+                                {/* Address Fields */}
+                                <div className="flex flex-wrap gap-6">
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="country">Country / Region*</label>
+                                        <input type="text" id="country" required placeholder="Country/Region" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="company">Company Name</label>
+                                        <input type="text" id="company" placeholder="Company (optional)" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                </div>
+    
+                                <div className="flex flex-wrap gap-6">
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="address">Street Address*</label>
+                                        <input type="text" id="address" required placeholder="House number and street" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="apt">Apt, suite, unit (optional)</label>
+                                        <input type="text" id="apt" placeholder="Apartment, suite, unit" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                </div>
+    
+                                <div className="flex flex-wrap gap-6">
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="city">City*</label>
+                                        <input type="text" id="city" required placeholder="City" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="state">State*</label>
+                                        <input type="text" id="state" required placeholder="State" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <label className="block mb-2 font-semibold" htmlFor="postalCode">Postal Code*</label>
+                                        <input type="text" id="postalCode" required placeholder="Postal Code" className="input w-full py-3 bg-[#F6F6F6]" />
+                                    </div>
+                                </div>
+    
+                                <div className="mb-8">
+                                    <label className="block mb-2 font-semibold" htmlFor="phone">Phone*</label>
+                                    <input type="text" id="phone" required placeholder="Phone" className="input w-full py-3 bg-[#F6F6F6]" />
+                                </div>
+    
+                                {/* Save Info */}
+                                <div className="flex items-center space-x-3 mb-6">
+                                    <input type="checkbox" id="saveInfo" className="checkbox-primary" />
+                                    <label htmlFor="saveInfo" className="text-darkGrey text-lg">Save my information for faster checkout</label>
+                                </div>
+                                {/* Payment Section */}
+                        <div>
+                            <h2 className="font-bold text-lg mb-4">Payment Method</h2>
+                            <div className="bg-[#F6F6F6] p-6 rounded-lg space-y-4">
+                                {/* Credit Card */}
+                                <div className="flex items-start space-x-3">
+                                    <input type="radio" name="paymentMethod" id="creditCard" className="radio-primary" />
+                                    <label htmlFor="creditCard" className="flex-grow">
+                                        Credit Card
+                                        <div className="text-mediumGrey text-sm">We accept all major credit cards</div>
                                     </label>
                                 </div>
-                                {/* card credits methods */}
-                                <div className='w-full '>
-                                    {/* Payment methods images */}
-                                    <div className='mb-[30px] flex justify-center flex-wrap md:flex-nowrap items-center gap-5'>
-                                        <div className='w-20 flex justify-center items-center py-4 rounded-lg bg-white'><img className='w-fit h-fit' src={gPayImg} alt="" /></div>
-                                        <div className='w-20 flex justify-center items-center py-4 rounded-lg bg-white'><img className='w-fit h-fit' src={visaImg} alt="" /></div>
-                                        <div className='w-20 flex justify-center items-center py-4 rounded-lg bg-white'><img className='w-fit h-fit' src={payPalImg} alt="" /></div>
-                                        <div className='w-20 flex justify-center items-center py-4 rounded-lg bg-white'><img className='w-fit h-fit' src={payPassImg} alt="" /></div>
-                                    </div>
-                                    {/* payment form */}
-                                    <form className='w-full'>
-                                        <div className='mb-10 w-full flex justify-center flex-wrap md:flex-nowrap gap-10 items-center'>
-                                            <label className="w-full input input-bordered flex items-center bg-transparent gap-2 border-darkGrey py-7 text-darkGrey">
-                                                <input type="text" className="w-full input grow border-none bg-transparent placeholder:text-mediumGrey placeholder:text-sm placeholder:font-normal outline-none focus:border-none" placeholder="Card Number" />
-                                            </label>
-                                            <label className="w-full input input-bordered flex items-center bg-transparent gap-2 border-darkGrey py-7 text-darkGrey">
-                                                <input type="text" className="w-full input grow border-none bg-transparent placeholder:text-mediumGrey placeholder:text-sm placeholder:font-normal outline-none focus:border-none" placeholder="Name of card" />
-                                            </label>
-                                        </div>
-                                        <div className='mb-10 w-full flex justify-center flex-wrap md:flex-nowrap gap-10 items-center'>
-                                            <label className="w-full input input-bordered flex items-center bg-transparent gap-2 border-darkGrey py-7 text-darkGrey">
-                                                <input type="text" className="w-full input grow border-none bg-transparent placeholder:text-mediumGrey placeholder:text-sm placeholder:font-normal outline-none focus:border-none" placeholder="Expiration date (MM/YY)" />
-                                            </label>
-                                            <label className="w-full input input-bordered flex items-center bg-transparent gap-2 border-darkGrey py-7 text-darkGrey">
-                                                <input type="password" className="w-full input grow border-none bg-transparent placeholder:text-mediumGrey placeholder:text-sm placeholder:font-normal outline-none focus:border-none" placeholder="Security Code" />
-                                            </label>
-                                        </div>
-                                    </form>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <input type="text" className="input w-full py-3" placeholder="Card Number" />
+                                    <input type="text" className="input w-full py-3" placeholder="Name on Card" />
+                                    <input type="text" className="input w-full py-3" placeholder="Expiration Date (MM/YY)" />
+                                    <input type="text" className="input w-full py-3" placeholder="Security Code" />
+                                </div>
+    
+                                {/* Cash on Delivery */}
+                                <div className="flex items-start space-x-3">
+                                    <input type="radio" name="paymentMethod" id="cashOnDelivery" className="radio-primary" />
+                                    <label htmlFor="cashOnDelivery">
+                                        Cash on Delivery
+                                        <div className="text-mediumGrey text-sm">Pay with cash upon delivery</div>
+                                    </label>
                                 </div>
                             </div>
-                            <div className="w-full h-[0.09px] bg-[#BEBCBD]"></div>
-                            {/* Cash on delivery */}
-                            <div className='cursor-pointer flex justify-center items-center gap-5'>
-                                <input defaultChecked className='radio-primary' type="radio" name="payment" id="cash-radio" />
-                                <label className='custom-radio-label' htmlFor="cash-radio">Cash on delivery
-                                    <br />
-                                    <span className='font-normal text-base'>Pay with cash upon delivery</span>
-                                </label>
-                            </div>
                         </div>
+                                <button type='submit' className=" w-full  mt-8 py-3 bg-aztecPurple text-white rounded-lg hover:bg-purple-800 transition-all duration-200">
+                                        Pay Now
+                                </button>
+                            </form>
+                        </div>
+    
+                        
                     </div>
-                    <Link onClick={handlePayNow}  className='ml-8 btn bg-aztecPurple text-white my-12 hover:bg-purple-800 hover:text-white'>Pay Now</Link>
-                </div>
-                {/* Order Summary */}
-                <div className='lg:order-2 order-1 w-full flex flex-col gap-[34px]'>
-                        <SectionHeading title='Your Order' />
-                        <div className='bg-[#F6F6F6] rounded-xl px-8 flex flex-col py-6 gap-[34px]'>
+    
+                    {/* Right: Order Summary */}
+                    <div className="flex-shrink-0 lg:w-[35%]">
+                        <SectionHeading title="Your Order" />
+                        <div className="bg-[#F6F6F6] p-6 rounded-lg space-y-6">
                             {productsList.length > 0 ? (
                                 productsList.map((product) => (
-                                    
-                                    <div className='flex justify-between gap-5 items-center w-full'>
-                                        {/* Image */}
-                                        <div className='w-[63px] h-[63px] rounded-md overflow-hidden'><img className='w-full h-full' src={product.image} alt="" /></div>
-                                        {/* Product Details */}
-                                        <div className='flex  justify-center gap-8 items-center'>
-                                            <h4 className='font-bold text-sm'>{product.name} <span>{product.quantity}</span></h4>
-                                            <div className='text-mediumGrey font-bold text-sm'>${product.price}</div>
+                                    <div key={product.id} className="flex items-center justify-between">
+                                        <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
+                                        <div className="text-sm font-medium">
+                                            <p>{product.name}</p>
+                                            <p>Qty: {product.quantity}</p>
                                         </div>
+                                        <p className="font-semibold">${product.price}</p>
                                     </div>
                                 ))
                             ) : (
-                                <div className='text-ashGrey text-[18px] font-semibold'>No items in cart</div>
+                                <p className="text-mediumGrey">No items in cart</p>
                             )}
                         </div>
+                        
+                    </div>
+                    
                 </div>
+                
+            </div>
+    
+            {/* Footer */}
+            <Footer />
         </div>
-      </div>
-      <Footer/>
-    </div>
-  )
+    );
+    
 }
 
 export default Checkout
