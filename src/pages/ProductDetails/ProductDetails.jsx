@@ -102,7 +102,7 @@ const ProductDetails = () => {
             await setDoc(doc(db, `cart/${user.uid}`), {
                 products: arrayUnion(product)
             }, { merge: true });
-            toast.success("Product added to cart");
+            await toast.success("Product added to cart");
         } catch (error) {
             console.log(error);
             toast.error("Login so you can add into the cart");

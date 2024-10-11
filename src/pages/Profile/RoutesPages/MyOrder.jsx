@@ -26,7 +26,8 @@ const MyOrder = () => {
                     estimatedDeliveryDate: estimatedDeliveryDate ? format(estimatedDeliveryDate, "MMMM dd, yyyy") : "", // Handle if `estimatedDeliveryDate` is undefined
                     status: data.status,
                     paymentMethod: data.paymentMethod,
-                    products: data.products // Assuming products are correctly formatted already
+                    products: data.products ,
+                    totalPrice: data.totalPrice
                 };
             });
             
@@ -55,7 +56,7 @@ const MyOrder = () => {
                         <div className="w-full flex justify-between items-center">
                             <div className="flex justify-center items-start flex-col gap-2 ">
                                 <div className="font-semibold text-mediumGrey text-sm">Order Date: <span className="text-[#BEBCBD]">{order.createdAt}</span></div>
-                                <div className="font-semibold text-mediumGrey text-sm">Estimated Delivery Date: <span className="text-[#BEBCBD]">{order.estimatedDeliveryDate}</span></div>
+                                <div className="font-semibold text-mediumGrey text-sm">Total Price: <span className="text-[#BEBCBD]">{order.totalPrice}</span></div>
                             </div>
                             <div className="flex justify-center items-start flex-col gap-2 ">
                                 <div className="font-semibold text-mediumGrey text-sm">Order Status: <span className="text-[#BEBCBD]">{order.status}</span></div>

@@ -6,7 +6,7 @@ import { FaFilter, FaRegHeart } from 'react-icons/fa';
 import { BeatLoader } from 'react-spinners';
 
 
-import { collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { arrayUnion, collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -58,30 +58,43 @@ const WomenProductList = () => {
       toast.error("Please log in to add items to your wishlist");
       return;
     }
-
+  
     const wishlistRef = doc(db, 'wishlist', user.uid);
-    const wishlistSnap = await getDoc(wishlistRef);
-
-    let wishlist = [];
-    if (wishlistSnap.exists()) {
-      wishlist = wishlistSnap.data().products;
+  
+    try {
+      const wishlistSnap = await getDoc(wishlistRef);
+  
+      let wishlist = [];
+  
+      // If the document exists, fetch the current wishlist
+      if (wishlistSnap.exists()) {
+        wishlist = wishlistSnap.data().products;
+      }
+  
+      const isFavorite = wishlist.some(item => item.productId === product.id);
+  
+      // If product is already in the wishlist, remove it
+      if (isFavorite) {
+        wishlist = wishlist.filter(item => item.productId !== product.id);
+        await setDoc(wishlistRef, { products: wishlist }, { merge: true });
+        toast.success("Removed from wishlist");
+      } else {
+        // If product is not in the wishlist, add it
+        await setDoc(wishlistRef, {
+          products: arrayUnion({
+            productId: product.id,
+            productName: product.name,
+            productImage: product.images[0],
+            productPrice: product.price,
+          })
+        }, { merge: true });
+  
+        toast.success("Added to wishlist");
+      }
+    } catch (error) {
+      console.error("Error updating wishlist: ", error);
+      toast.error("Something went wrong. Please try again.");
     }
-
-    const isFavorite = wishlist.some(item => item.productId === product.id);
-
-    if (isFavorite) {
-      wishlist = wishlist.filter(item => item.productId !== product.id);
-    } else {
-      wishlist.push({
-        productId: product.id,
-        productName: product.name,
-        productImage: product.images[0],
-        productPrice: product.price,
-      });
-    }
-
-    await updateDoc(wishlistRef, { products: wishlist });
-    toast.success(isFavorite ? "Removed from wishlist" : "Added to wishlist");
   };
 
 

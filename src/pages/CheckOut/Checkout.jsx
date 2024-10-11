@@ -1,7 +1,7 @@
 import Header from '../../components/Header/Header';
 import Footer from '../../components/Footer/Footer';
 import SectionHeading from '../../components/ui/SectionHeading';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { collection, doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,8 @@ const Checkout = () => {
     const [productsList, setProductsList] = useState([]);
     const [user, setUser] = useState(null);
     const navigate = useNavigate()
+    let { state } = useLocation();
+    let totalPrice = state.totalPrice
 
     const fetchData = async (currentUser) => {
         try {
@@ -64,7 +66,7 @@ const Checkout = () => {
                 orderNumber: generateOrderNumber(),
                 products: productsList,
                 createdAt: serverTimestamp(),
-                // Add any other order details you want to store
+                totalPrice: totalPrice
             };
     
             const ordersCollectionRef = collection(db, `myOrder/${user.uid}/orders`); // Adjusted collection reference
@@ -120,50 +122,50 @@ const Checkout = () => {
                                         handlePayNow();         
                                     }}  className="space-y-6">
                                 {/* Name Fields */}
-                                <div className="flex flex-wrap gap-6">
-                                    <div className="flex-1">
+                                <div className="flex flex-wrap w-full gap-6">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="firstName">First Name*</label>
                                         <input type="text" id="firstName" required placeholder="First Name" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="lastName">Last Name*</label>
                                         <input type="text" id="lastName" required placeholder="Last Name" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
                                 </div>
     
                                 {/* Address Fields */}
-                                <div className="flex flex-wrap gap-6">
-                                    <div className="flex-1">
+                                <div className="flex flex-wrap w-full gap-6">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="country">Country / Region*</label>
                                         <input type="text" id="country" required placeholder="Country/Region" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="company">Company Name</label>
                                         <input type="text" id="company" placeholder="Company (optional)" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
                                 </div>
     
-                                <div className="flex flex-wrap gap-6">
-                                    <div className="flex-1">
+                                <div className="flex flex-wrap w-full gap-6">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="address">Street Address*</label>
                                         <input type="text" id="address" required placeholder="House number and street" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="apt">Apt, suite, unit (optional)</label>
                                         <input type="text" id="apt" placeholder="Apartment, suite, unit" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
                                 </div>
     
-                                <div className="flex flex-wrap gap-6">
-                                    <div className="flex-1">
+                                <div className="flex flex-wrap w-full gap-6">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="city">City*</label>
                                         <input type="text" id="city" required placeholder="City" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="state">State*</label>
                                         <input type="text" id="state" required placeholder="State" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
-                                    <div className="flex-1">
+                                    <div className="md:flex-1 w-full">
                                         <label className="block mb-2 font-semibold" htmlFor="postalCode">Postal Code*</label>
                                         <input type="text" id="postalCode" required placeholder="Postal Code" className="input w-full py-3 bg-[#F6F6F6]" />
                                     </div>
@@ -191,7 +193,7 @@ const Checkout = () => {
                                         <div className="text-mediumGrey text-sm">We accept all major credit cards</div>
                                     </label>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
                                     <input type="text" className="input w-full py-3" placeholder="Card Number" />
                                     <input type="text" className="input w-full py-3" placeholder="Name on Card" />
                                     <input type="text" className="input w-full py-3" placeholder="Expiration Date (MM/YY)" />
@@ -223,13 +225,19 @@ const Checkout = () => {
                         <div className="bg-[#F6F6F6] p-6 rounded-lg space-y-6">
                             {productsList.length > 0 ? (
                                 productsList.map((product) => (
-                                    <div key={product.id} className="flex items-center justify-between">
+                                    <div key={product.id}>
+                                        <div  className="flex items-center justify-between">
                                         <img src={product.image} alt={product.name} className="w-16 h-16 object-cover rounded-md" />
                                         <div className="text-sm font-medium">
                                             <p>{product.name}</p>
                                             <p>Qty: {product.quantity}</p>
                                         </div>
                                         <p className="font-semibold">${product.price}</p>
+                                    </div>
+                                    <div className=' w-full text-center font-semibold'>
+                                        Total Price:<span className=''>  ${totalPrice}</span>
+                                        
+                                    </div>
                                     </div>
                                 ))
                             ) : (

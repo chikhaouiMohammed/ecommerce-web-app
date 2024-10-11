@@ -19,7 +19,6 @@ const Profile = () => {
     const location = useLocation()
     const path = location.pathname
     const user = auth.currentUser
-    console.log(user)
     
     const handleSignOut = async() => {
         signOut(auth).then(() => {

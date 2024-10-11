@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, signInWithRedirect, getRedirectResult, setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, getRedirectResult, signInWithPopup } from 'firebase/auth';
 import googleImg from '../images/Login/icons8-google-48.png';
 import { auth, db } from '../firebase';
 import toast from 'react-hot-toast';
@@ -11,22 +11,29 @@ const GoogleSignIn = () => {
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-  
+
     try {
-      // Set persistence to local
-      await setPersistence(auth, browserLocalPersistence);
       // Sign in with Google popup
       const result = await signInWithPopup(auth, provider);
-  
+
       // The signed-in user info
       const user = result.user;
       console.log('User signed in:', user);
-      
-      // Handle successful sign-in, navigate to profile or store user info
-      // Example: navigate("/user-profile");
-  
+
+      // Store user data in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        fullName: user.displayName,
+        photo: user.photoURL,
+        signInMethod: 'Google',
+      });
+
+      toast.success('Registration successful!');
+      navigate('/user-profile');
+
     } catch (error) {
       console.error("Error during sign-in:", error);
+      toast.error("Error during sign-in: " + error.message);
     }
   };
 
@@ -36,10 +43,10 @@ const GoogleSignIn = () => {
       try {
         const result = await getRedirectResult(auth);
         console.log("Google Sign-In Redirect Result:", result);
-  
+
         if (result?.user) {
           const user = result.user;
-  
+
           // Store user data in Firestore
           await setDoc(doc(db, "users", user.uid), {
             email: user.email,
@@ -47,7 +54,7 @@ const GoogleSignIn = () => {
             photo: user.photoURL,
             signInMethod: 'Google',
           });
-  
+
           toast.success('Registration successful!');
           navigate('/user-profile');
         } else {
@@ -58,10 +65,9 @@ const GoogleSignIn = () => {
         console.log("Error during sign-in:", error);
       }
     };
-  
+
     checkRedirectResult();
   }, [navigate]);
-  
 
   return (
     <div
